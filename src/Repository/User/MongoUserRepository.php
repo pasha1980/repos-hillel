@@ -30,13 +30,13 @@ final class MongoUserRepository implements UserRepositoryInterface
     {
         $collection = $this->client->blog->users;
         $data = $collection->findOne(['id' => $id]);
-        return new User($data->id, $data->email);
+        return new User($data->id, $data->name ,$data->email);
     }
 
     public function save(UserInterface $user): void
     {
         $collection = $this->client->blog->users;
-        $collection->insertOne(['id'=> $user->getId(), 'email'=>$user->getEmail()]);
+        $collection->updateOne(['id'=>$user->getId()], ['$set' =>['name' => $user->getName(), 'email' =>$user->getEmail()]], ['upsert' => true]);
     }
 
     public function delete(UserInterface $user): void

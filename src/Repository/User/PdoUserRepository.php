@@ -29,26 +29,33 @@ final class PdoUserRepository implements UserRepositoryInterface
 
     public function find(int $id): UserInterface
     {
-        $sql = 'select * from `users` where id = :id';
+        $sql = 'select * from `users` where id = :id ;';
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':id', $id);
         $stmt->execute();
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return new User($data['id'], $data['email']);
+        return new User($data['id'], $data['name'], $data['email']);
     }
 
     public function save(UserInterface $user): void
     {
-        $value = $user->getId() . ", '" . $user->getEmail() . "'";
-        $sql = 'insert into `users` values (' . $value . '); ';
+        $user1 = $this->find($user->getId());
+        $usersId = $user1->getId();
+        if(isset($usersId)) {
+            $sql = "update `users` set name = :name , email = :email where id = :id ;";
+        } else {
+            $sql = 'insert into `users` values ( :id , :name , :email );';
+        }
         $stmt = $this->pdo->prepare($sql);
-//        $stmt->bindValue(':val', $value);
+        $stmt->bindValue(':id', $user->getId());
+        $stmt->bindValue(':name', $user->getName());
+        $stmt->bindValue(':email', $user->getEmail());
         $stmt->execute();
     }
 
     public function delete(UserInterface $user): void
     {
-        $sql = 'delete from `users` where id = :id';
+        $sql = 'delete from `users` where id = :id ;';
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':id', $user->getId());
         $stmt->execute();

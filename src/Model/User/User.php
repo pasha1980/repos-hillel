@@ -7,16 +7,19 @@ namespace App\Model\User;
 final class User implements UserInterface
 {
     private ?int $id;
+    private ?string $name;
     private ?string $email;
 
     /**
      * User constructor.
      * @param int|null $id
+     * @param string|null $name
      * @param string|null $email
      */
-    public function __construct(?int $id, ?string $email)
+    public function __construct(?int $id, ?string $name, ?string $email)
     {
         $this->setId($id);
+        $this->setName($name);
         $this->setEmail($email);
     }
 
@@ -50,6 +53,22 @@ final class User implements UserInterface
     public function setEmail(?string $email): void
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string|null $name
+     */
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
     }
 
 }
